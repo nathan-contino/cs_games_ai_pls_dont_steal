@@ -36,6 +36,7 @@ makeexec:
 ; make the start code executable
 ; MEMW [4] :start #0x20000000
 ; MEMW [2] #0xFF99 #0x20000004
+; JMP <> :makeexec
 
 fptp:
 NOP
