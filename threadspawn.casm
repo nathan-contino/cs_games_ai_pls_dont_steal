@@ -1,0 +1,30 @@
+.global start:
+
+write:
+; write code that spins to random places
+MEMW [4] #0x41004000 #0x4000FFFF
+MEMW [4] #0x41004001 #0x4001FFFF
+
+start:
+; spawn new threads
+MEMW [4] :makeexec #0x20000200
+MEMW [4] :attacksetup #0x20000200
+MEMW [4] #0x4000FFFF #0x20000200
+MEMW [4] #0x4001FFFF #0x20000200
+JMP <> :start
+
+attacksetup:
+; keep making memory non-executable
+MOV :start $A
+attack:
+SUB #0xFF $A
+MEMW [4] $A #0x20000000
+MEMW [2] #0xFF80 #0x20000004
+JMP <> :attack
+
+makeexec:
+; make the start code executable
+MEMW [4] :start #0x20000000
+MEMW [2] #0xFF99 #0x20000004
+
+
