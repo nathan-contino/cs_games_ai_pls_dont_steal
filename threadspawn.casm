@@ -3,14 +3,15 @@
 write:
 ; write code that spins to random places
 MEMW [4] #0x41004000 #0x4000FFFF
-MEMW [4] #0x41004001 #0x4001FFFF
+MEMW [4] #0x4100E00B #0x400EFFFF
 
 start:
 ; spawn new threads
-MEMW [4] :makeexec #0x20000200
+; MEMW [4] :makeexec #0x20000200
 MEMW [4] :attacksetup #0x20000200
+MEMW [4] :attacksetup2 #0x20000200
 MEMW [4] #0x4000FFFF #0x20000200
-MEMW [4] #0x4001FFFF #0x20000200
+MEMW [4] #0x400EFFFF #0x20000200
 JMP <> :start
 
 attacksetup:
@@ -22,9 +23,21 @@ MEMW [4] $A #0x20000000
 MEMW [2] #0xFF80 #0x20000004
 JMP <> :attack
 
+attacksetup2:
+; keep making memory non-executable
+MOV :fptp $A
+attack2:
+ADD #0xFF $A
+MEMW [4] $A #0x20000000
+MEMW [2] #0xFF80 #0x20000004
+JMP <> :attack2
+
 makeexec:
 ; make the start code executable
-MEMW [4] :start #0x20000000
-MEMW [2] #0xFF99 #0x20000004
+; MEMW [4] :start #0x20000000
+; MEMW [2] #0xFF99 #0x20000004
+
+fptp:
+NOP
 
 
